@@ -4,7 +4,7 @@ from PIL import Image
 
 class VLMModel(ABC):
     @abstractmethod
-    def __init__(self, model_name: str, device: str):
+    def __init__(self, model_name: str, device: str, candidate_labels: list):
         pass
     
     @abstractmethod

@@ -1,3 +1,3 @@
 {
-    "candidate_labels":["Bear", "Elephant", "Giraffe", "Leopard", "Lion", "Monkey", "Tiger", "Zebra", "no animal"]
+    "candidate_labels":["Bear", "Elephant", "Giraffe", "Leopard", "Lion", "Monkey", "Tiger", "Zebra" , "cat" , "This i not an animal"]
 }

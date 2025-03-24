@@ -6,7 +6,7 @@ from .base import VLMModel
 import json
 
 class CLIPModel(VLMModel):
-    def __init__(self, model_name: str = "openai/clip-vit-base-patch32", device: str = None , labels_file: str = None):
+    def __init__(self, model_name: str = "openai/clip-vit-base-patch32", device: str = None , candidate_labels: list = None):
         if device is None:
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
@@ -15,15 +15,8 @@ class CLIPModel(VLMModel):
         from transformers import CLIPProcessor, CLIPModel
         self.processor = CLIPProcessor.from_pretrained(model_name)
         self.model = CLIPModel.from_pretrained(model_name).to(self.device)
+        self.candidate_labels = candidate_labels
         
-        if labels_file:
-            with open(labels_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                self.candidate_labels = data.get("candidate_labels", [])
-                if not self.candidate_labels:
-                    raise ValueError("candidate_labels is required")
-        else:
-            raise ValueError("labels_file is required")
         
     def label_region(self, image: Image.Image, query_text: str = None) -> str:
         """使用CLIP進行零樣本圖像分類"""
@@ -35,7 +28,7 @@ class CLIPModel(VLMModel):
         ).to(self.device)
         
         with torch.no_grad(): # 關閉梯度計算，因為我們不需要進行反向傳播
-            outputs = self.model(**inputs)
+            outputs = self.model(**inputs) #在 Python 中，** 用於將字典解包成關鍵字參數。這意味著字典中的每個鍵值對都會作為單獨的關鍵字參數傳遞給函數
             logits_per_image = outputs.logits_per_image
             probs = logits_per_image.softmax(dim=1)
             
